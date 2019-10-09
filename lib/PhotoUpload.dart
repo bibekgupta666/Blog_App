@@ -22,10 +22,16 @@ class _UploadPhotoPageState extends State<UploadPhotoPage>
   String url;
   final formKey = new GlobalKey<FormState>(); //this key is used to distinguish forms
 
-  Future getImage() async 
+  Future getImage(bool isCamera) async 
   {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery); 
-
+    File tempImage;
+    if(isCamera)
+    {
+       tempImage = await ImagePicker.pickImage(source: ImageSource.camera);
+    }else
+    {
+       tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    }
     setState(() 
     {
       sampleImage = tempImage;
@@ -118,11 +124,51 @@ class _UploadPhotoPageState extends State<UploadPhotoPage>
                     child: sampleImage == null? Text("Select an Image"): enableUpload(),
                   ),
             
-                  floatingActionButton: new FloatingActionButton
+                  // floatingActionButton: new FloatingActionButton
+                  // (
+                  //   onPressed: getImage,
+                  //   tooltip: 'Add Image',
+                  //   child: new Icon(Icons.add_a_photo),
+                  // ),
+                  bottomNavigationBar: new BottomAppBar
                   (
-                    onPressed: getImage,
-                    tooltip: 'Add Image',
-                    child: new Icon(Icons.add_a_photo),
+                    color: Colors.green,
+                    child: new Container
+                    (
+
+                      margin: const EdgeInsets.only(left: 50.0, right: 50.0),
+
+                      child: new Row
+                      (
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,//this will create space beteen buttons in snackbar
+                        mainAxisSize: MainAxisSize.max,
+
+                        children: <Widget>
+                        [
+                          new IconButton
+                          (
+                            icon: new Icon(Icons.camera_alt),
+                            iconSize: 50,
+                            color: Colors.white,
+                            onPressed: ()
+                            {
+                              getImage(true);
+                            }
+                          ),
+
+                          new IconButton
+                          (
+                            icon: new Icon(Icons.insert_drive_file),
+                            iconSize: 50,
+                            color: Colors.white,
+                            onPressed: ()
+                            {
+                              getImage(false);
+                            }
+                          )
+                        ],
+                      ),
+                    ),
                   ),
             
             
@@ -172,9 +218,4 @@ class _UploadPhotoPageState extends State<UploadPhotoPage>
                   ),
                 );
               }
-      
-        
-      
-        
-
 }
