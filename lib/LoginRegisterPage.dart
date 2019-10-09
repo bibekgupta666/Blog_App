@@ -108,14 +108,16 @@ class _LoginRegisterState extends State<LoginRegisterPage>
   {
     return new Scaffold
     (
+      resizeToAvoidBottomInset: false,
       appBar: new AppBar
       (
         title: new Text("6494 - Blog App"),
       ),
       body: new Container
       (
+        
         margin: EdgeInsets.all(15.0),
-
+      
         child: new Form
         (
           key: formKey,
@@ -125,6 +127,7 @@ class _LoginRegisterState extends State<LoginRegisterPage>
             children: createInputs() + createButtons(),
           ),
         ),
+      
       ),
     );
   }
