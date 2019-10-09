@@ -1,7 +1,9 @@
 import 'dart:ui' as prefix0;
 
+import 'package:blog_app/DialogBox.dart';
 import 'package:flutter/material.dart';
 import 'Authentication.dart';
+
 
 class LoginRegisterPage extends StatefulWidget
 {
@@ -29,6 +31,8 @@ enum FormType
 
 class _LoginRegisterState extends State<LoginRegisterPage>
 {
+  DialogBox dialogBox = new DialogBox();
+
   final formKey = new GlobalKey<FormState>();
   FormType _formType = FormType.login;
   String _email = "";
@@ -59,17 +63,20 @@ class _LoginRegisterState extends State<LoginRegisterPage>
         if(_formType == FormType.login)
         {
           String userId = await widget.auth.SignIn(_email, _password);
-          print("Login User ID: " + userId);
+          dialogBox.information(context, "All Done", "Sucessfully logged in.");
+          //print("Login User ID: " + userId);
         }else
         {
           String userId = await widget.auth.SignUp(_email, _password);
-          print("Register User ID: " + userId);
+          dialogBox.information(context, "All Done", "Your account has been created successfully.");
+         // print("Register User ID: " + userId);
         }
 
         widget.onSignedIn();
       }catch(e)
       {
-        print("Error: " + e.toString());
+        dialogBox.information(context, "Error", e.toString());
+        //print("Error: " + e.toString());
       }
     }
   }
@@ -177,7 +184,7 @@ class _LoginRegisterState extends State<LoginRegisterPage>
       (
         backgroundColor: Colors.transparent,
         radius: 110.0,
-        //child: Image.asset('images/app_logo.png'),
+        child: Image.asset('images/logo_blog.png'),
       ),
 
     );
