@@ -108,7 +108,7 @@ class _LoginRegisterState extends State<LoginRegisterPage>
   {
     return new Scaffold
     (
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
       appBar: new AppBar
       (
         title: new Text("6494 - Blog App"),

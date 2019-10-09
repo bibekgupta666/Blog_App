@@ -113,6 +113,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage>
                 // TODO: implement build
                 return new Scaffold
                 (
+                  resizeToAvoidBottomPadding: false,
                   appBar: new AppBar
                   (
                     title: new Text("Image Upload"),
@@ -123,13 +124,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage>
                   (
                     child: sampleImage == null? Text("Select an Image"): enableUpload(),
                   ),
-            
-                  // floatingActionButton: new FloatingActionButton
-                  // (
-                  //   onPressed: getImage,
-                  //   tooltip: 'Add Image',
-                  //   child: new Icon(Icons.add_a_photo),
-                  // ),
+  
                   bottomNavigationBar: new BottomAppBar
                   (
                     color: Colors.green,
