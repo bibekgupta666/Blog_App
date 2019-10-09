@@ -200,7 +200,7 @@ class _LoginRegisterState extends State<LoginRegisterPage>
           (
             child: new Text("Login", style: new TextStyle(fontSize: 20.0)),
             textColor: Colors.white,
-            color: Colors.red,
+            color: Colors.green,
 
             onPressed: validateAndSubmit,
           ),
@@ -208,7 +208,7 @@ class _LoginRegisterState extends State<LoginRegisterPage>
           new FlatButton
           (
             child: new Text("Don't have an Account? Register here.", style: new TextStyle(fontSize: 14.0)),
-            textColor: Colors.red,
+            textColor: Colors.green,
 
             onPressed: moveToRegister,
             
@@ -224,7 +224,7 @@ class _LoginRegisterState extends State<LoginRegisterPage>
           (
             child: new Text("Register", style: new TextStyle(fontSize: 20.0)),
             textColor: Colors.white,
-            color: Colors.red,
+            color: Colors.green,
 
             onPressed: validateAndSubmit,
           ),
@@ -232,7 +232,7 @@ class _LoginRegisterState extends State<LoginRegisterPage>
           new FlatButton
           (
             child: new Text("Already have an Account? Login here.", style: new TextStyle(fontSize: 14.0)),
-            textColor: Colors.red,
+            textColor: Colors.green,
 
             onPressed: moveToLogin,
             

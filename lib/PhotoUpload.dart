@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:blog_app/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UploadPhotoPage extends StatefulWidget
 {
@@ -16,6 +19,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage>
 {
   File sampleImage; //this will be the image file which user will select from galary
   String _myValue;
+  String url;
   final formKey = new GlobalKey<FormState>(); //this key is used to distinguish forms
 
   Future getImage() async 
@@ -43,76 +47,134 @@ class _UploadPhotoPageState extends State<UploadPhotoPage>
     }
   }
 
-  @override
-  Widget build(BuildContext context) 
+  void uploadStatusImage() async
   {
-    // TODO: implement build
-    return new Scaffold
-    (
-      appBar: new AppBar
-      (
-        title: new Text("Image Upload"),
-        centerTitle: true,
-      ),
+    if(validateAndSave())
+    {
+      final StorageReference postImageRef = FirebaseStorage.instance.ref().child("Post Images");
+      var timeKey = new DateTime.now();
 
-      body: new Center
-      (
-        child: sampleImage == null? Text("Select an Image"): enableUpload(),
-      ),
+      final StorageUploadTask uploadTask = postImageRef.child(timeKey.toString() + ".jpg").putFile(sampleImage);
 
-      floatingActionButton: new FloatingActionButton
-      (
-        onPressed: getImage,
-        tooltip: 'Add Image',
-        child: new Icon(Icons.add_a_photo),
-      ),
+      var ImageUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
 
+      url = ImageUrl.toString();
 
-    );
-  }
+      goToHomePage();
+      
+            saveToDatabase(url);
+            
+          }
+        }
+      
+        void saveToDatabase(String url) 
+        {
+          var dbTimeKey = new DateTime.now();
+          var formatDate = new DateFormat('MMM d, yyyy');
+           var formatTime = new DateFormat('EEEE, hh:mm aaa');
+      
+           String date = formatDate .format(dbTimeKey);
+           String time = formatTime .format(dbTimeKey);
+      
+           DatabaseReference ref = FirebaseDatabase.instance.reference();
+      
+           var data = 
+           {
+             "image": url,
+             "description": _myValue,
+             "date": date,
+             "time": time,
+           };
+      
+          ref.child("Posts").push().set(data);
+        }
 
-  Widget enableUpload()
-  {
-    return Container
-    (
-      child: new Form
-      (
-          key: formKey,
-
-        child: Column
-        (
-          children: <Widget>
-          [
-            Image.file(sampleImage, height: 330.0, width: 660.0,), //user selected image will be displayed
-            SizedBox(height: 15.0,), //this will add space
-
-            TextFormField
-            (
-              decoration: new InputDecoration(labelText: 'Description'),
-
-              validator: (value)
+        void goToHomePage() 
+        {
+          Navigator.push
+                (
+                  context, 
+                  MaterialPageRoute(builder: (context)
+                  {
+                    return new HomePage();
+                  })
+                );
+        }
+            
+              @override
+              Widget build(BuildContext context) 
               {
-                return value.isEmpty? 'Please describe a bit about Picture' : null;
-              },
-              onSaved: (value)
+                // TODO: implement build
+                return new Scaffold
+                (
+                  appBar: new AppBar
+                  (
+                    title: new Text("Image Upload"),
+                    centerTitle: true,
+                  ),
+            
+                  body: new Center
+                  (
+                    child: sampleImage == null? Text("Select an Image"): enableUpload(),
+                  ),
+            
+                  floatingActionButton: new FloatingActionButton
+                  (
+                    onPressed: getImage,
+                    tooltip: 'Add Image',
+                    child: new Icon(Icons.add_a_photo),
+                  ),
+            
+            
+                );
+              }
+            
+              Widget enableUpload()
               {
-              return _myValue = value;
-              },
-            ),
-            SizedBox(height: 15.0,),
-
-            RaisedButton
-            (
-              elevation: 10.0,
-              child: Text("Create Post"),
-              textColor: Colors.white,
-              color: Colors.green,
-              onPressed: validateAndSave,
-            )
-          ],
-        ),
-      ),
-    );
-  }
+                return Container
+                (
+                  child: new Form
+                  (
+                      key: formKey,
+            
+                    child: Column
+                    (
+                      children: <Widget>
+                      [
+                        Image.file(sampleImage, height: 330.0, width: 660.0,), //user selected image will be displayed
+                        SizedBox(height: 15.0,), //this will add space
+            
+                        TextFormField
+                        (
+                          decoration: new InputDecoration(labelText: 'Description'),
+            
+                          validator: (value)
+                          {
+                            return value.isEmpty? 'Please describe a bit about Picture' : null;
+                          },
+                          onSaved: (value)
+                          {
+                          return _myValue = value;
+                          },
+                        ),
+                        SizedBox(height: 15.0,),
+            
+                        RaisedButton
+                        (
+                          elevation: 10.0,
+                          child: Text("Create Post"),
+                          textColor: Colors.white,
+                          color: Colors.green,
+                          onPressed: uploadStatusImage,
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }
+      
+        
+      
+        
 
 }
